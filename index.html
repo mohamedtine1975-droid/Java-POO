@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java POO — Maîtrise les Bases</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --orange: #FF4D00;
+    --yellow: #FFD600;
+    --dark: #0A0A0A;
+    --card: #111111;
+    --border: #222222;
+    --text: #E8E8E8;
+    --muted: #666;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+  }
+
+  code, pre, .mono { font-family: 'Space Mono', monospace; }
+
+  /* GRID BG */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,77,0,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,77,0,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    z-index: 1;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: var(--orange);
+    color: white;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    padding: 0.4rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    animation: pulse-badge 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-badge {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,77,0,0.5); }
+    50% { box-shadow: 0 0 0 12px rgba(255,77,0,0); }
+  }
+
+  .hero h1 {
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 span.accent { color: var(--orange); }
+  .hero h1 span.yellow { color: var(--yellow); }
+
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 500px;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-family: 'Space Mono', monospace;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-inner::-webkit-scrollbar { display: none; }
+
+  .nav-item {
+    padding: 1rem 1.2rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    color: var(--orange);
+    border-bottom-color: var(--orange);
+  }
+
+  /* SECTIONS */
+  .main { max-width: 1200px; margin: 0 auto; padding: 4rem 2rem; position: relative; z-index: 1; }
+
+  .section { margin-bottom: 8rem; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--orange);
+    border: 1px solid var(--orange);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+
+  .card:hover {
+    border-color: rgba(255,77,0,0.3);
+    transform: translateY(-2px);
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .card-title .icon {
+    width: 28px;
+    height: 28px;
+    background: rgba(255,77,0,0.15);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+  }
+
+  .card p { color: #aaa; line-height: 1.8; font-size: 0.95rem; }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: #0D0D0D;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    background: #111;
+  }
+
+  .code-dots { display: flex; gap: 6px; }
+  .code-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .code-dot:nth-child(1) { background: #FF5F56; }
+  .code-dot:nth-child(2) { background: #FFBD2E; }
+  .code-dot:nth-child(3) { background: #27C93F; }
+
+  .code-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  .copy-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+  .code-block pre {
+    padding: 1.5rem;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+
+  .code-block code { background: none !important; padding: 0 !important; }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    border-left: 3px solid var(--orange);
+    background: rgba(255,77,0,0.06);
+    padding: 1.2rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+  }
+
+  .highlight-box .label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--orange);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  .highlight-box p { color: #ccc; font-size: 0.95rem; line-height: 1.7; }
+
+  /* WARNING BOX */
+  .warn-box {
+    border-left: 3px solid var(--yellow);
+    background: rgba(255,214,0,0.06);
+    padding: 1.2rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+  }
+
+  .warn-box .label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--yellow);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  .warn-box p { color: #ccc; font-size: 0.95rem; line-height: 1.7; }
+
+  /* GRID LAYOUTS */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
+
+  @media (max-width: 768px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+
+  /* QUIZ */
+  .quiz-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .quiz-question {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  .quiz-option {
+    background: #161616;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.9rem 1.2rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    text-align: left;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+  }
+
+  .quiz-option:hover:not(.disabled) { border-color: rgba(255,77,0,0.5); background: rgba(255,77,0,0.05); }
+  .quiz-option.correct { border-color: #27C93F; background: rgba(39,201,63,0.1); color: #27C93F; }
+  .quiz-option.wrong { border-color: #FF5F56; background: rgba(255,95,86,0.1); color: #FF5F56; }
+  .quiz-option.disabled { cursor: default; }
+
+  .quiz-feedback {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    display: none;
+    padding: 1rem;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+  }
+
+  .quiz-feedback.show { display: block; }
+
+  /* CONCEPT PILLS */
+  .pill {
+    display: inline-block;
+    background: rgba(255,77,0,0.1);
+    border: 1px solid rgba(255,77,0,0.3);
+    color: var(--orange);
+    padding: 0.3rem 0.8rem;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-family: 'Space Mono', monospace;
+    margin: 0.2rem;
+  }
+
+  /* PROGRESS */
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange), var(--yellow));
+    border-radius: 100px;
+    transition: width 0.5s ease;
+  }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin: 1.5rem 0;
+  }
+
+  th {
+    background: rgba(255,77,0,0.1);
+    color: var(--orange);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding: 0.8rem 1rem;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+
+  td {
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border);
+    color: #bbb;
+    line-height: 1.6;
+  }
+
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* INLINE CODE */
+  .inline-code {
+    background: rgba(255,77,0,0.12);
+    color: var(--orange);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8em;
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+  }
+
+  /* STEP */
+  .step {
+    display: flex;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    background: var(--orange);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    font-family: 'Space Mono', monospace;
+    margin-top: 0.1rem;
+  }
+
+  .step-content h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .step-content p { color: #aaa; font-size: 0.93rem; line-height: 1.7; }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 4rem 0;
+  }
+
+  /* SCORE */
+  #quiz-score {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    display: none;
+  }
+
+  #quiz-score.show { display: block; }
+
+  /* ANIMATIONS */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--orange); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">☕ JAVA POO — ÉDITION URGENTE</div>
+  <h1>
+    <span class="accent">Maîtrise</span><br>
+    le <span class="yellow">POO</span><br>
+    en Java
+  </h1>
+  <p>Tout ce qu'il faut savoir avant l'interro. Classes, objets, constructeurs, encapsulation — expliqués simplement avec du code réel.</p>
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 12L2 6h12z"/></svg>
+  </div>
+</section>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <button class="nav-item active" onclick="scrollTo('intro')">01 — Intro</button>
+    <button class="nav-item" onclick="scrollTo('classe')">02 — Classe</button>
+    <button class="nav-item" onclick="scrollTo('objet')">03 — Objet</button>
+    <button class="nav-item" onclick="scrollTo('constructeur')">04 — Constructeur</button>
+    <button class="nav-item" onclick="scrollTo('attributs')">05 — Attributs</button>
+    <button class="nav-item" onclick="scrollTo('methodes')">06 — Méthodes</button>
+    <button class="nav-item" onclick="scrollTo('encapsulation')">07 — Encapsulation</button>
+    <button class="nav-item" onclick="scrollTo('heritage')">08 — Héritage</button>
+    <button class="nav-item" onclick="scrollTo('quiz')">🎯 Quiz</button>
+  </div>
+</nav>
+
+<main class="main">
+
+  <!-- 01 INTRO -->
+  <section class="section fade-in" id="intro">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">C'est quoi la POO ?</h2>
+    </div>
+
+    <div class="grid-3" style="margin-bottom: 2rem;">
+      <div class="card">
+        <div class="card-title"><span class="icon">🧠</span> POO = ?</div>
+        <p><strong style="color:white">Programmation Orientée Objet</strong>. C'est une façon d'organiser le code en regroupant les données et les comportements dans des <em>objets</em>.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🏗️</span> Le principe</div>
+        <p>On modélise le monde réel. Une voiture, un étudiant, un compte bancaire… tout peut devenir un objet dans notre programme.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🎯</span> Pourquoi ?</div>
+        <p>Code plus organisé, réutilisable, et plus facile à maintenir. C'est le standard dans l'industrie.</p>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <div class="label">🔑 LES 4 PILIERS DE LA POO</div>
+      <p>
+        <span class="pill">Encapsulation</span>
+        <span class="pill">Héritage</span>
+        <span class="pill">Polymorphisme</span>
+        <span class="pill">Abstraction</span>
+        <br><br>
+        Pour le début, on va surtout voir <strong style="color:white">Encapsulation</strong> et <strong style="color:white">Héritage</strong>.
+      </p>
+    </div>
+
+    <div class="highlight-box" style="border-color:#FFD600; background: rgba(255,214,0,0.04);">
+      <div class="label" style="color:#FFD600">💡 ANALOGIE SIMPLE</div>
+      <p>Pense à un <strong style="color:white">moule à gâteau</strong> (= la classe) et aux <strong style="color:white">gâteaux</strong> qu'on produit (= les objets). Le moule définit la forme, mais chaque gâteau est unique.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 02 CLASSE -->
+  <section class="section fade-in" id="classe">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">La Classe</h2>
+    </div>
+
+    <div class="grid-2" style="margin-bottom: 2rem;">
+      <div>
+        <p style="color:#aaa; line-height:1.8; margin-bottom:1rem">Une <strong style="color:white">classe</strong> est un <strong style="color:white">plan/modèle</strong> qui décrit ce que seront nos objets. Elle définit :</p>
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Les attributs</h3>
+            <p>Les données / caractéristiques (ex: nom, âge, couleur)</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Les méthodes</h3>
+            <p>Les actions / comportements (ex: parler, calculer, afficher)</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="highlight-box">
+          <div class="label">SYNTAXE DE BASE</div>
+          <p>
+            <span class="inline-code">public class NomClasse { }</span>
+            <br><br>
+            ✅ Commence par une <strong style="color:white">majuscule</strong><br>
+            ✅ Un fichier = une classe (même nom)<br>
+            ✅ Les accolades <span class="inline-code">{ }</span> délimitent le contenu
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-label">Etudiant.java</span>
+        <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+      </div>
+      <pre><code class="language-java">// Déclaration d'une classe "Etudiant"
+public class Etudiant {
+
+    // ── ATTRIBUTS (les données de l'objet) ──────────────
+    String nom;
+    int age;
+    double moyenne;
+
+    // ── MÉTHODES (les actions de l'objet) ───────────────
+    void sePresenter() {
+        System.out.println("Je m'appelle " + nom + ", j'ai " + age + " ans.");
+    }
+
+    void afficherMoyenne() {
+        System.out.println("Ma moyenne est : " + moyenne);
+    }
+
+}</code></pre>
+    </div>
+
+    <div class="warn-box">
+      <div class="label">⚠️ À RETENIR</div>
+      <p>Une classe ne <em>fait</em> rien toute seule. C'est juste un plan. Pour l'utiliser, il faut créer un <strong style="color:white">objet</strong> à partir de cette classe.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 03 OBJET -->
+  <section class="section fade-in" id="objet">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">L'Objet (Instance)</h2>
+    </div>
+
+    <p style="color:#aaa; line-height:1.8; margin-bottom:2rem; font-size:1rem">Un <strong style="color:white">objet</strong> est une instance d'une classe. C'est le "vrai" gâteau créé à partir du moule. On le crée avec le mot-clé <span class="inline-code">new</span>.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-label">Main.java</span>
+        <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+      </div>
+      <pre><code class="language-java">public class Main {
+    public static void main(String[] args) {
+
+        // Création d'un objet "etudiant1" de type Etudiant
+        Etudiant etudiant1 = new Etudiant();
+
+        // Accès aux attributs avec le point "."
+        etudiant1.nom = "Yasmine";
+        etudiant1.age = 20;
+        etudiant1.moyenne = 14.5;
+
+        // Appel de méthodes avec le point "."
+        etudiant1.sePresenter();       // → "Je m'appelle Yasmine, j'ai 20 ans."
+        etudiant1.afficherMoyenne();   // → "Ma moyenne est : 14.5"
+
+        // On peut créer autant d'objets qu'on veut !
+        Etudiant etudiant2 = new Etudiant();
+        etudiant2.nom = "Karim";
+        etudiant2.age = 22;
+        etudiant2.sePresenter();       // → "Je m'appelle Karim, j'ai 22 ans."
+
+    }
+}</code></pre>
+    </div>
+
+    <div class="grid-2">
+      <div class="highlight-box">
+        <div class="label">📌 SYNTAXE CRÉATION D'OBJET</div>
+        <p>
+          <span class="inline-code">TypeClasse nomObjet = new TypeClasse();</span><br><br>
+          • <strong style="color:white">TypeClasse</strong> = le type (nom de la classe)<br>
+          • <strong style="color:white">nomObjet</strong> = le nom de ta variable<br>
+          • <strong style="color:white">new</strong> = mot-clé qui crée l'objet en mémoire
+        </p>
+      </div>
+      <div class="highlight-box">
+        <div class="label">🔗 ACCÈS AUX MEMBRES</div>
+        <p>
+          On utilise le <strong style="color:white">point ( . )</strong> pour accéder aux attributs et méthodes d'un objet :<br><br>
+          <span class="inline-code">objet.attribut</span> — lire/écrire une donnée<br>
+          <span class="inline-code">objet.methode()</span> — exécuter une action
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 04 CONSTRUCTEUR -->
+  <section class="section fade-in" id="constructeur">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Le Constructeur</h2>
+    </div>
+
+    <p style="color:#aaa; line-height:1.8; margin-bottom:2rem">Le <strong style="color:white">constructeur</strong> est une méthode spéciale qui s'exécute automatiquement à la création d'un objet. Il sert à <strong style="color:white">initialiser les attributs</strong> dès le départ.</p>
+
+    <div class="grid-2" style="margin-bottom: 2rem;">
+      <div>
+        <p style="color:#aaa; margin-bottom:1rem; font-size:0.9rem">🔴 SANS constructeur (moins propre)</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+            <span class="code-label">Sans constructeur</span>
+            <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+          </div>
+          <pre><code class="language-java">Etudiant e = new Etudiant();
+e.nom = "Ali";
+e.age = 19;
+e.moyenne = 13.0;
+// 3 lignes juste pour remplir...</code></pre>
+        </div>
+      </div>
+      <div>
+        <p style="color:#aaa; margin-bottom:1rem; font-size:0.9rem">🟢 AVEC constructeur (propre et efficace)</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+            <span class="code-label">Avec constructeur</span>
+            <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+          </div>
+          <pre><code class="language-java">Etudiant e = new Etudiant("Ali", 19, 13.0);
+// 1 seule ligne, direct !</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-label">Etudiant.java — avec constructeur</span>
+        <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+      </div>
+      <pre><code class="language-java">public class Etudiant {
+
+    // Attributs
+    String nom;
+    int age;
+    double moyenne;
+
+    // ── CONSTRUCTEUR ────────────────────────────────────
+    // Même nom que la classe, PAS de type de retour !
+    public Etudiant(String nom, int age, double moyenne) {
+        this.nom = nom;         // "this" désigne l'objet en cours
+        this.age = age;
+        this.moyenne = moyenne;
+    }
+
+    // Méthodes
+    void sePresenter() {
+        System.out.println("Je m'appelle " + nom + ", j'ai " + age + " ans.");
+    }
+
+}
+
+// Dans Main.java :
+Etudiant e1 = new Etudiant("Sara", 21, 15.5);
+Etudiant e2 = new Etudiant("Mehdi", 20, 11.0);
+e1.sePresenter(); // "Je m'appelle Sara, j'ai 21 ans."</code></pre>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title"><span class="icon">📛</span> Même nom que la classe</div>
+        <p>Si la classe s'appelle <span class="inline-code">Etudiant</span>, le constructeur s'appelle aussi <span class="inline-code">Etudiant</span>.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🚫</span> Pas de type de retour</div>
+        <p>Contrairement aux méthodes normales, le constructeur n'a <strong>pas</strong> de <span class="inline-code">void</span> ni de type de retour.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">👆</span> Le mot-clé "this"</div>
+        <p><span class="inline-code">this.nom</span> désigne l'attribut de <em>l'objet courant</em>, pour le distinguer du paramètre <span class="inline-code">nom</span>.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 05 ATTRIBUTS & TYPES -->
+  <section class="section fade-in" id="attributs">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">Attributs & Types</h2>
+    </div>
+
+    <p style="color:#aaa; line-height:1.8; margin-bottom:2rem">Les attributs sont les <strong style="color:white">variables d'une classe</strong>. En Java, tout est typé — tu dois déclarer le type de chaque variable.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>TYPE</th>
+          <th>DESCRIPTION</th>
+          <th>EXEMPLE</th>
+          <th>VALEUR PAR DÉFAUT</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="inline-code">int</span></td>
+          <td>Nombre entier</td>
+          <td><span class="inline-code">int age = 20;</span></td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">double</span></td>
+          <td>Nombre décimal</td>
+          <td><span class="inline-code">double note = 14.5;</span></td>
+          <td>0.0</td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">String</span></td>
+          <td>Chaîne de caractères</td>
+          <td><span class="inline-code">String nom = "Ali";</span></td>
+          <td>null</td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">boolean</span></td>
+          <td>Vrai ou Faux</td>
+          <td><span class="inline-code">boolean actif = true;</span></td>
+          <td>false</td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">char</span></td>
+          <td>Un seul caractère</td>
+          <td><span class="inline-code">char genre = 'M';</span></td>
+          <td>'\u0000'</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-label">Voiture.java — exemple complet</span>
+        <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+      </div>
+      <pre><code class="language-java">public class Voiture {
+
+    // Attributs avec différents types
+    String marque;        // String
+    int annee;            // int
+    double prix;          // double
+    boolean estElectrique; // boolean
+
+    // Constructeur
+    public Voiture(String marque, int annee, double prix, boolean estElectrique) {
+        this.marque = marque;
+        this.annee = annee;
+        this.prix = prix;
+        this.estElectrique = estElectrique;
+    }
+
+    void afficherInfos() {
+        System.out.println(marque + " (" + annee + ") - " + prix + "€");
+        if (estElectrique) {
+            System.out.println("⚡ Voiture électrique");
+        }
+    }
+
+}
+
+// Utilisation :
+Voiture v1 = new Voiture("Tesla", 2023, 45000.0, true);
+Voiture v2 = new Voiture("Renault", 2020, 15000.0, false);
+v1.afficherInfos();
+v2.afficherInfos();</code></pre>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 06 MÉTHODES -->
+  <section class="section fade-in" id="methodes">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2 class="section-title">Les Méthodes</h2>
+    </div>
+
+    <p style="color:#aaa; line-height:1.8; margin-bottom:2rem">Les <strong style="color:white">méthodes</strong> définissent ce que peut faire un objet. Elles peuvent prendre des paramètres et retourner une valeur.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-label">Structure d'une méthode</span>
+        <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+      </div>
+      <pre><code class="language-java">// Structure générale :
+// [modificateur] [typeRetour] nomMethode([paramètres]) { ... }
+
+// Méthode sans retour (void) et sans paramètre
+void direBonjour() {
+    System.out.println("Bonjour !");
+}
+
+// Méthode sans retour AVEC paramètre
+void saluer(String prenom) {
+    System.out.println("Bonjour, " + prenom + " !");
+}
+
+// Méthode AVEC retour (int) et paramètre
+int calculerAgeEnMois(int age) {
+    return age * 12;   // "return" envoie la valeur
+}
+
+// Méthode AVEC retour booléen
+boolean estMajeur(int age) {
+    return age >= 18;
+}
+
+// Utilisation :
+direBonjour();                        // → "Bonjour !"
+saluer("Sara");                       // → "Bonjour, Sara !"
+int mois = calculerAgeEnMois(20);     // → mois = 240
+boolean majeur = estMajeur(17);       // → majeur = false</code></pre>
+    </div>
+
+    <div class="grid-2">
+      <div class="highlight-box">
+        <div class="label">📚 TYPES DE RETOUR</div>
+        <p>
+          <span class="inline-code">void</span> → ne retourne rien<br>
+          <span class="inline-code">int</span> → retourne un entier<br>
+          <span class="inline-code">double</span> → retourne un décimal<br>
+          <span class="inline-code">String</span> → retourne du texte<br>
+          <span class="inline-code">boolean</span> → retourne vrai/faux<br>
+          <span class="inline-code">NomClasse</span> → retourne un objet !
+        </p>
+      </div>
+      <div class="warn-box">
+        <div class="label">⚠️ RÈGLE IMPORTANTE</div>
+        <p>
+          Si le type de retour n'est pas <span class="inline-code">void</span>, tu <strong style="color:white">DOIS</strong> utiliser <span class="inline-code">return</span> pour retourner une valeur, sinon Java donnera une erreur de compilation.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 07 ENCAPSULATION -->
+  <section class="section fade-in" id="encapsulation">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2 class="section-title">Encapsulation</h2>
+    </div>
+
+    <p style="color:#aaa; line-height:1.8; margin-bottom:2rem">L'<strong style="color:white">encapsulation</strong> consiste à <strong style="color:white">cacher les attributs</strong> et à ne les rendre accessibles qu'à travers des méthodes contrôlées (<strong style="color:white">getters/setters</strong>).</p>
+
+    <div class="highlight-box">
+      <div class="label">🔐 LES MODIFICATEURS D'ACCÈS</div>
+      <p>
+        <span class="pill">public</span> Accessible de partout<br>
+        <span class="pill">private</span> Accessible seulement dans la classe<br>
+        <span class="pill">protected</span> Accessible dans la classe et ses sous-classes<br><br>
+        En POO, les attributs sont généralement <strong style="color:white">private</strong>, les méthodes <strong style="color:white">public</strong>.
+      </p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-label">CompteBancaire.java — encapsulation complète</span>
+        <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+      </div>
+      <pre><code class="language-java">public class CompteBancaire {
+
+    // Attributs PRIVÉS — personne ne peut y accéder directement
+    private String proprietaire;
+    private double solde;
+
+    // Constructeur
+    public CompteBancaire(String proprietaire, double soldeInitial) {
+        this.proprietaire = proprietaire;
+        this.solde = soldeInitial;
+    }
+
+    // ── GETTER — lire la valeur ──────────────────────────
+    public String getProprietaire() {
+        return proprietaire;
+    }
+
+    public double getSolde() {
+        return solde;
+    }
+
+    // ── SETTER — modifier la valeur (avec contrôle !) ───
+    public void setSolde(double montant) {
+        if (montant >= 0) {          // Vérification avant modification
+            this.solde = montant;
+        } else {
+            System.out.println("Erreur : montant invalide !");
+        }
+    }
+
+    // Méthodes métier
+    public void deposer(double montant) {
+        if (montant > 0) {
+            solde += montant;
+            System.out.println("Dépôt de " + montant + "€ effectué.");
+        }
+    }
+
+    public void retirer(double montant) {
+        if (montant > 0 && montant <= solde) {
+            solde -= montant;
+            System.out.println("Retrait de " + montant + "€ effectué.");
+        } else {
+            System.out.println("Solde insuffisant !");
+        }
+    }
+
+}
+
+// Dans Main.java :
+CompteBancaire compte = new CompteBancaire("Nadia", 1000.0);
+// compte.solde = -5000;  ❌ ERREUR ! solde est private
+
+compte.deposer(500);          // ✅ → "Dépôt de 500.0€ effectué."
+compte.retirer(200);          // ✅ → "Retrait de 200.0€ effectué."
+System.out.println(compte.getSolde()); // ✅ → 1300.0</code></pre>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>MÉTHODE</th>
+          <th>RÔLE</th>
+          <th>NOMMAGE</th>
+          <th>TYPE DE RETOUR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:white">Getter</strong></td>
+          <td>Lire un attribut privé</td>
+          <td><span class="inline-code">getNomAttribut()</span></td>
+          <td>Type de l'attribut</td>
+        </tr>
+        <tr>
+          <td><strong style="color:white">Setter</strong></td>
+          <td>Modifier un attribut privé</td>
+          <td><span class="inline-code">setNomAttribut(valeur)</span></td>
+          <td><span class="inline-code">void</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 08 HÉRITAGE -->
+  <section class="section fade-in" id="heritage">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2 class="section-title">Héritage (Bonus)</h2>
+    </div>
+
+    <p style="color:#aaa; line-height:1.8; margin-bottom:2rem">L'<strong style="color:white">héritage</strong> permet à une classe d'<strong style="color:white">hériter des attributs et méthodes</strong> d'une autre classe. On évite de répéter du code !</p>
+
+    <div class="highlight-box">
+      <div class="label">🧬 CONCEPT</div>
+      <p>
+        <strong style="color:white">Classe parente (super-classe)</strong> → contient les éléments communs<br>
+        <strong style="color:white">Classe enfant (sous-classe)</strong> → hérite ET peut ajouter ses propres éléments<br><br>
+        Mot-clé : <span class="inline-code">extends</span>
+      </p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-label">Héritage — Animal → Chien</span>
+        <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+      </div>
+      <pre><code class="language-java">// ── CLASSE PARENTE ──────────────────────────────────────
+public class Animal {
+    protected String nom;
+    protected int age;
+
+    public Animal(String nom, int age) {
+        this.nom = nom;
+        this.age = age;
+    }
+
+    public void manger() {
+        System.out.println(nom + " est en train de manger.");
+    }
+
+    public void dormir() {
+        System.out.println(nom + " dort...");
+    }
+}
+
+// ── CLASSE ENFANT ───────────────────────────────────────
+// Chien HÉRITE de Animal → il a aussi nom, age, manger(), dormir()
+public class Chien extends Animal {
+
+    private String race; // Attribut spécifique au Chien
+
+    // super() appelle le constructeur du parent
+    public Chien(String nom, int age, String race) {
+        super(nom, age);  // Appel du constructeur de Animal
+        this.race = race;
+    }
+
+    // Méthode spécifique au Chien
+    public void aboyer() {
+        System.out.println(nom + " aboie : Wouf Wouf !");
+    }
+
+    // Override = redéfinir une méthode du parent
+    @Override
+    public void manger() {
+        System.out.println(nom + " mange sa croquette avec enthousiasme !");
+    }
+}
+
+// Dans Main.java :
+Chien rex = new Chien("Rex", 3, "Berger Allemand");
+rex.manger();   // → "Rex mange sa croquette avec enthousiasme !" (version Chien)
+rex.dormir();   // → "Rex dort..." (hérité de Animal)
+rex.aboyer();   // → "Rex aboie : Wouf Wouf !" (spécifique Chien)</code></pre>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="icon">🔼</span> super()</div>
+        <p>Appelle le constructeur ou une méthode de la classe parente. Toujours en <strong>première ligne</strong> du constructeur enfant.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🔄</span> @Override</div>
+        <p>Indique qu'on <strong>redéfinit</strong> une méthode héritée. L'annotation est optionnelle mais recommandée pour la clarté.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- QUIZ -->
+  <section class="section fade-in" id="quiz">
+    <div class="section-header">
+      <span class="section-num">🎯</span>
+      <h2 class="section-title">Quiz — Es-tu prêt pour l'interro ?</h2>
+    </div>
+
+    <p style="color:#aaa; margin-bottom:2rem">Teste tes connaissances ! <span id="score-display" style="color:var(--orange); font-weight:700; font-family:'Space Mono',monospace">0/8</span> réponses correctes</p>
+
+    <div class="progress-bar" style="margin-bottom:3rem">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="quiz-card" id="q1">
+      <div class="quiz-question">1. Qu'est-ce qu'une <strong>classe</strong> en Java ?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this, false, 'q1', 'Une variable stocke une valeur, pas un plan.')">Une variable qui stocke des données</button>
+        <button class="quiz-option" onclick="answer(this, true, 'q1', '✅ Exact ! La classe est le plan/modèle qui décrit les attributs et méthodes des objets.')">Un plan/modèle qui décrit les attributs et méthodes d'un objet</button>
+        <button class="quiz-option" onclick="answer(this, false, 'q1', 'Une méthode est une action, pas un plan.')">Une méthode qui effectue des calculs</button>
+        <button class="quiz-option" onclick="answer(this, false, 'q1', 'Un objet est une instance de classe, pas la classe elle-même.')">Un objet créé en mémoire</button>
+      </div>
+      <div class="quiz-feedback" id="q1-fb"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="quiz-card" id="q2">
+      <div class="quiz-question">2. Quel mot-clé utilise-t-on pour créer un objet ?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this, false, 'q2', 'create n\'existe pas en Java.')"><span class="mono">create</span></button>
+        <button class="quiz-option" onclick="answer(this, false, 'q2', 'make n\'existe pas en Java.')"><span class="mono">make</span></button>
+        <button class="quiz-option" onclick="answer(this, true, 'q2', '✅ Correct ! On écrit : NomClasse obj = new NomClasse();')"><span class="mono">new</span></button>
+        <button class="quiz-option" onclick="answer(this, false, 'q2', 'this fait référence à l\'objet courant, pas à la création.')"><span class="mono">this</span></button>
+      </div>
+      <div class="quiz-feedback" id="q2-fb"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="quiz-card" id="q3">
+      <div class="quiz-question">3. Qu'est-ce qu'un <strong>constructeur</strong> ?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this, false, 'q3', 'Un getter lit un attribut privé, ce n\'est pas un constructeur.')">Une méthode qui retourne un attribut privé</button>
+        <button class="quiz-option" onclick="answer(this, true, 'q3', '✅ Parfait ! Le constructeur s\'exécute automatiquement lors du new et initialise les attributs.')">Une méthode spéciale qui s'exécute à la création d'un objet pour initialiser ses attributs</button>
+        <button class="quiz-option" onclick="answer(this, false, 'q3', 'Une méthode main est le point d\'entrée du programme, pas un constructeur.')">La méthode main du programme</button>
+        <button class="quiz-option" onclick="answer(this, false, 'q3', 'Un constructeur initialise, il ne supprime pas d\'objets.')">Une méthode qui supprime un objet de la mémoire</button>
+      </div>
+      <div class="quiz-feedback" id="q3-fb"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="quiz-card" id="q4">
+      <div class="quiz-question">4. Que signifie <span class="mono" style="background:rgba(255,77,0,0.15);color:var(--orange);padding:0.1em 0.4em;border-radius:3px">private</span> ?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this, false, 'q4', 'public rend accessible de partout, pas private.')">Accessible de partout dans le programme</button>
+        <button class="quiz-option" onclick="answer(this, false, 'q4', 'protected permet l\'accès depuis les sous-classes aussi.')">Accessible uniquement depuis les sous-classes</button>
+        <button class="quiz-option" onclick="answer(this, true, 'q4', '✅ Exact ! private = encapsulation. Seule la classe elle-même peut y accéder.')">Accessible uniquement à l'intérieur de la classe elle-même</button>
+        <button class="quiz-option" onclick="answer(this, false, 'q4', 'private ne signifie pas que c\'est supprimé après usage.')">Supprimé automatiquement après usage</button>
+      </div>
+      <div class="quiz-feedback" id="q4-fb"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="quiz-card" id="q5">
+      <div class="quiz-question">5. À quoi sert le mot-clé <span class="mono" style="background:rgba(255,77,0,0.15);color:var(--orange);padding:0.1em 0.4em;border-radius:3px">this</span> dans une classe ?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this, false, 'q5', 'this ne crée pas de copie.')">Créer une copie de l'objet courant</button>
+        <button class="quiz-option" onclick="answer(this, true, 'q5', '✅ Correct ! this.nom désigne l\'attribut de l\'objet actuel, utile pour éviter la confusion avec les paramètres de même nom.')">Faire référence à l'objet courant (pour distinguer attributs et paramètres)</button>
+        <button class="quiz-option" onclick="answer(this, false, 'q5', 'this n\'appelle pas le parent, c\'est super() qui le fait.')">Appeler la classe parente</button>
+        <button class="quiz-option" onclick="answer(this, false, 'q5', 'this n\'est pas utilisé uniquement dans main().')">Déclarer la méthode main</button>
+      </div>
+      <div class="quiz-feedback" id="q5-fb"></div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="quiz-card" id="q6">
+      <div class="quiz-question">6. Une méthode <span class="mono" style="background:rgba(255,77,0,0.15);color:var(--orange);padding:0.1em 0.4em;border-radius:3px">void</span> retourne...</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this, false, 'q6', '0 est retourné par une méthode int par défaut, pas void.')">La valeur 0</button>
+        <button class="quiz-option" onclick="answer(this, false, 'q6', 'false est retourné par une méthode boolean, pas void.')">La valeur false</button>
+        <button class="quiz-option" onclick="answer(this, true, 'q6', '✅ Exactement ! void = ne retourne rien du tout. Pas besoin de return.')">Rien du tout</button>
+        <button class="quiz-option" onclick="answer(this, false, 'q6', 'void ne retourne pas null, il ne retourne rien.')">null</button>
+      </div>
+      <div class="quiz-feedback" id="q6-fb"></div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="quiz-card" id="q7">
+      <div class="quiz-question">7. Quel mot-clé permet à une classe d'hériter d'une autre ?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this, false, 'q7', 'inherit n\'existe pas en Java.')"><span class="mono">inherit</span></button>
+        <button class="quiz-option" onclick="answer(this, false, 'q7', 'implements est pour les interfaces, pas l\'héritage de classe.')"><span class="mono">implements</span></button>
+        <button class="quiz-option" onclick="answer(this, false, 'q7', 'super() appelle le constructeur parent, mais ne déclare pas l\'héritage.')"><span class="mono">super</span></button>
+        <button class="quiz-option" onclick="answer(this, true, 'q7', '✅ Parfait ! public class Chien extends Animal { } → Chien hérite de Animal.')"><span class="mono">extends</span></button>
+      </div>
+      <div class="quiz-feedback" id="q7-fb"></div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="quiz-card" id="q8">
+      <div class="quiz-question">8. Un <strong>getter</strong> est une méthode qui...</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this, false, 'q8', 'Modifier un attribut privé, c\'est le rôle du setter.')">Modifie un attribut privé</button>
+        <button class="quiz-option" onclick="answer(this, false, 'q8', 'Le constructeur initialise, pas le getter.')">Initialise les attributs d'un objet</button>
+        <button class="quiz-option" onclick="answer(this, true, 'q8', '✅ Correct ! Le getter retourne la valeur d\'un attribut privé. Ex: getNom() retourne this.nom.')">Retourne la valeur d'un attribut privé</button>
+        <button class="quiz-option" onclick="answer(this, false, 'q8', 'Créer un objet, c\'est le rôle de new + constructeur.')">Crée un nouvel objet</button>
+      </div>
+      <div class="quiz-feedback" id="q8-fb"></div>
+    </div>
+
+    <!-- Score final -->
+    <div id="quiz-score">
+      <div id="score-emoji" style="font-size:4rem; margin-bottom:1rem"></div>
+      <div id="score-title" style="font-size:1.5rem; font-weight:800; margin-bottom:0.5rem"></div>
+      <div id="score-subtitle" style="color:var(--muted); font-size:0.95rem; margin-bottom:1.5rem"></div>
+      <div id="score-final" style="font-size:3rem; font-weight:800; font-family:'Space Mono',monospace; color:var(--orange)"></div>
+    </div>
+
+  </section>
+
+  <!-- CHEATSHEET -->
+  <section class="section fade-in">
+    <div class="section-header">
+      <span class="section-num">📋</span>
+      <h2 class="section-title">Cheat Sheet — À imprimer</h2>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-label">Java POO — Résumé complet</span>
+        <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+      </div>
+      <pre><code class="language-java">// ╔══════════════════════════════════════════════════════╗
+// ║           JAVA POO — CHEAT SHEET COMPLET            ║
+// ╚══════════════════════════════════════════════════════╝
+
+// 1. DÉCLARATION DE CLASSE
+public class MaClasse {
+    // ...
+}
+
+// 2. ATTRIBUTS (variables de classe)
+private String nom;          // private = encapsulé
+private int age;
+public double prix;          // public = accessible directement
+
+// 3. CONSTRUCTEUR (même nom que la classe, pas de void)
+public MaClasse(String nom, int age) {
+    this.nom = nom;          // this = objet courant
+    this.age = age;
+}
+
+// 4. GETTER (lire un attribut privé)
+public String getNom() {
+    return this.nom;
+}
+
+// 5. SETTER (modifier un attribut privé)
+public void setNom(String nom) {
+    this.nom = nom;
+}
+
+// 6. MÉTHODE
+public void afficher() {          // void = pas de retour
+    System.out.println(nom);
+}
+
+public int calculer(int x) {      // int = retourne un entier
+    return x * 2;
+}
+
+// 7. CRÉER UN OBJET
+MaClasse obj = new MaClasse("Test", 25);
+
+// 8. UTILISER UN OBJET
+obj.afficher();                   // appel méthode
+String n = obj.getNom();          // appel getter
+obj.setNom("Nouveau");            // appel setter
+
+// 9. HÉRITAGE
+public class SousClasse extends MaClasse {
+    public SousClasse(String nom, int age) {
+        super(nom, age);           // appel constructeur parent
+    }
+
+    @Override
+    public void afficher() {       // redéfinition de méthode
+        System.out.println("Override : " + nom);
+    }
+}</code></pre>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer style="border-top: 1px solid var(--border); padding: 3rem 2rem; text-align:center; position:relative; z-index:1;">
+  <p style="font-family:'Space Mono',monospace; font-size:0.75rem; color:var(--muted);">
+    Java POO — Fait avec 🔥 pour survivre à l'interro<br>
+    <span style="color:var(--orange)">Bonne chance !</span>
+  </p>
+</footer>
+
+<script>
+  // Init highlight.js
+  hljs.highlightAll();
+
+  // Scroll to section
+  function scrollTo(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Copy code
+  function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = 'COPIÉ !';
+      btn.style.color = '#27C93F';
+      btn.style.borderColor = '#27C93F';
+      setTimeout(() => {
+        btn.textContent = 'COPIER';
+        btn.style.color = '';
+        btn.style.borderColor = '';
+      }, 2000);
+    });
+  }
+
+  // Quiz
+  let score = 0;
+  let answered = 0;
+  const total = 8;
+
+  function answer(btn, isCorrect, qid, feedback) {
+    const card = document.getElementById(qid);
+    const options = card.querySelectorAll('.quiz-option');
+    const fb = document.getElementById(qid + '-fb');
+
+    // Check if already answered
+    if (options[0].classList.contains('disabled')) return;
+
+    options.forEach(o => o.classList.add('disabled'));
+
+    if (isCorrect) {
+      btn.classList.add('correct');
+      score++;
+    } else {
+      btn.classList.add('wrong');
+      // Highlight correct answer
+      options.forEach(o => {
+        if (o.getAttribute('onclick').includes('true')) {
+          o.classList.add('correct');
+        }
+      });
+    }
+
+    fb.textContent = feedback;
+    fb.classList.add('show');
+    answered++;
+
+    // Update score display
+    document.getElementById('score-display').textContent = score + '/' + total;
+
+    // Update progress
+    document.getElementById('progress-fill').style.width = (answered / total * 100) + '%';
+
+    // Show final score
+    if (answered === total) {
+      setTimeout(showFinalScore, 500);
+    }
+  }
+
+  function showFinalScore() {
+    const scoreEl = document.getElementById('quiz-score');
+    scoreEl.classList.add('show');
+
+    const pct = score / total;
+    let emoji, title, subtitle;
+
+    if (pct === 1) {
+      emoji = '🏆'; title = 'PARFAIT !'; subtitle = 'Tu maîtrises le POO Java. L\'interro va être une formalité !';
+    } else if (pct >= 0.75) {
+      emoji = '🔥'; title = 'TRÈS BIEN !'; subtitle = 'Tu as bien compris les bases. Relis les points que tu as manqués.';
+    } else if (pct >= 0.5) {
+      emoji = '💪'; title = 'PAS MAL !'; subtitle = 'Continue à réviser, tu es sur la bonne voie !';
+    } else {
+      emoji = '📚'; title = 'À RÉVISER'; subtitle = 'Relis les sections ci-dessus, tu vas y arriver !';
+    }
+
+    document.getElementById('score-emoji').textContent = emoji;
+    document.getElementById('score-title').textContent = title;
+    document.getElementById('score-subtitle').textContent = subtitle;
+    document.getElementById('score-final').textContent = score + ' / ' + total;
+
+    scoreEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Active nav on scroll
+  const sections = ['intro','classe','objet','constructeur','attributs','methodes','encapsulation','heritage','quiz'];
+  const navItems = document.querySelectorAll('.nav-item');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top < 150) current = id;
+    });
+
+    navItems.forEach((item, i) => {
+      item.classList.toggle('active', sections[i] === current);
+    });
+  });
+</script>
+</body>
+</html>
