@@ -536,6 +536,7 @@
     <button class="nav-item" onclick="scrollTo('encapsulation')">07 — Encapsulation</button>
     <button class="nav-item" onclick="scrollTo('heritage')">08 — Héritage</button>
     <button class="nav-item" onclick="scrollTo('quiz')">🎯 Quiz</button>
+    <button class="nav-item" onclick="scrollTo('exercice')">💻 Exercice CRUD</button>
   </div>
 </nav>
 
@@ -1363,6 +1364,345 @@ public class SousClasse extends MaClasse {
     </div>
   </section>
 
+
+  <hr class="divider">
+
+  <!-- EXERCICE CRUD -->
+  <section class="section fade-in" id="exercice">
+    <div class="section-header">
+      <span class="section-num">💻</span>
+      <h2 class="section-title">Exercice — Gestion de Produits (CRUD)</h2>
+    </div>
+
+    <div class="grid-3" style="margin-bottom:2rem">
+      <div class="card">
+        <div class="card-title"><span class="icon">🗂️</span> 2 fichiers Java</div>
+        <p><span class="inline-code">Produit.java</span> la classe objet, et <span class="inline-code">GestionProduits.java</span> le programme principal avec le menu.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🔄</span> CRUD complet</div>
+        <p>Ajouter, afficher tous, afficher par ID, modifier prix, modifier quantité, supprimer.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🧩</span> Concepts utilisés</div>
+        <p>Classe, constructeur, <span class="inline-code">private</span>, getters/setters, tableau d'objets, boucle <span class="inline-code">do-while</span>.</p>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div style="display:flex; gap:0.5rem; margin-bottom:0; border-bottom: 1px solid var(--border);">
+      <button class="tab-btn active" id="tab-btn-1" onclick="switchTab(1)" style="padding:0.75rem 1.5rem; background:rgba(255,77,0,0.1); border:1px solid var(--orange); border-bottom:none; border-radius:6px 6px 0 0; color:var(--orange); font-family:'Space Mono',monospace; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s;">Produit.java</button>
+      <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)" style="padding:0.75rem 1.5rem; background:none; border:1px solid var(--border); border-bottom:none; border-radius:6px 6px 0 0; color:var(--muted); font-family:'Space Mono',monospace; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s;">GestionProduits.java</button>
+    </div>
+
+    <!-- Tab 1 : Produit.java -->
+    <div id="tab-1">
+      <div class="highlight-box" style="margin-top:1.5rem">
+        <div class="label">🎯 RÔLE DE CE FICHIER</div>
+        <p>C'est le <strong style="color:white">plan de l'objet Produit</strong>. Il définit les données (attributs) et les actions (méthodes). Il ne contient <strong style="color:white">pas</strong> de <span class="inline-code">main()</span> — il sert juste à créer des objets depuis l'autre fichier.</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+          <span class="code-label">Produit.java</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+        </div>
+        <pre><code class="language-java">// ─────────────────────────────────────────────────────────────
+//  CLASSE PRODUIT — Le plan/modèle de notre objet
+//  Un fichier .java = une classe publique (même nom que le fichier)
+// ─────────────────────────────────────────────────────────────
+
+public class Produit {
+
+    // ── ATTRIBUTS ────────────────────────────────────────────
+    // "private" = encapsulation.
+    // Personne ne peut accéder à ces données directement depuis
+    // l'extérieur. On DOIT passer par les getters/setters.
+    private int    id;
+    private String libelle;
+    private int    quantite;
+    private double prixUnitaire;
+    private String datePeremption;   // format : "JJ/MM/AAAA"
+
+    // ── CONSTRUCTEUR ─────────────────────────────────────────
+    // Même nom que la classe, PAS de type de retour (pas de void).
+    // S'exécute automatiquement quand on fait : new Produit(...)
+    // "this.xxx" désigne l'attribut de CET objet pour le
+    // distinguer du paramètre qui a le même nom.
+    public Produit(int id, String libelle, int quantite,
+                   double prixUnitaire, String datePeremption) {
+        this.id             = id;
+        this.libelle        = libelle;
+        this.quantite       = quantite;
+        this.prixUnitaire   = prixUnitaire;
+        this.datePeremption = datePeremption;
+    }
+
+    // ── GETTERS — lire les attributs privés ──────────────────
+    // "return" = renvoyer la valeur à celui qui appelle
+    public int    getId()             { return id; }
+    public String getLibelle()        { return libelle; }
+    public int    getQuantite()       { return quantite; }
+    public double getPrixUnitaire()   { return prixUnitaire; }
+    public String getDatePeremption() { return datePeremption; }
+
+    // ── SETTERS — modifier les attributs privés ──────────────
+    // On ne crée un setter QUE pour les champs modifiables.
+    // Ici : seulement prix et quantité (comme demandé dans le menu).
+    public void setPrixUnitaire(double prixUnitaire) {
+        this.prixUnitaire = prixUnitaire;
+    }
+
+    public void setQuantite(int quantite) {
+        this.quantite = quantite;
+    }
+
+    // ── MÉTHODE D'AFFICHAGE ───────────────────────────────────
+    // void = ne retourne rien, juste affiche dans la console.
+    // System.out.printf permet de formater (%.2f = 2 décimales).
+    public void afficher() {
+        System.out.println("┌─────────────────────────────────────┐");
+        System.out.println("  ID          : " + id);
+        System.out.println("  Libellé     : " + libelle);
+        System.out.println("  Quantité    : " + quantite);
+        System.out.printf ("  Prix unit.  : %.2f DH%n", prixUnitaire);
+        System.out.println("  Péremption  : " + datePeremption);
+        System.out.println("└─────────────────────────────────────┘");
+    }
+}</code></pre>
+      </div>
+    </div>
+
+    <!-- Tab 2 : GestionProduits.java -->
+    <div id="tab-2" style="display:none">
+      <div class="highlight-box" style="margin-top:1.5rem">
+        <div class="label">🎯 RÔLE DE CE FICHIER</div>
+        <p>C'est le <strong style="color:white">programme principal</strong>. Il contient le <span class="inline-code">main()</span>, la boucle de menu, et toutes les fonctions CRUD. Il utilise un <strong style="color:white">tableau de Produit[]</strong> pour tout stocker en mémoire.</p>
+      </div>
+
+      <!-- main + tableau -->
+      <p style="color:var(--orange); font-family:'Space Mono',monospace; font-size:0.78rem; font-weight:700; margin:1.5rem 0 0.5rem; letter-spacing:0.05em;">▸ DÉCLARATIONS &amp; main()</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+          <span class="code-label">GestionProduits.java — partie 1/4</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+        </div>
+        <pre><code class="language-java">import java.util.Scanner;   // Pour lire la saisie clavier
+
+public class GestionProduits {
+
+    // ── VARIABLES PARTAGÉES (static = appartiennent à la classe) ──
+    // On fixe la taille max à 100 produits.
+    // "nbProduits" = nombre de cases RÉELLEMENT utilisées dans le tableau.
+    static Produit[] produits = new Produit[100];
+    static int nbProduits = 0;
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+
+        // Données de test (pour ne pas démarrer avec un tableau vide)
+        // nbProduits++ = place le produit ET incrémente le compteur en 1 ligne
+        produits[nbProduits++] = new Produit(1, "Lait",   50,  8.50, "01/12/2025");
+        produits[nbProduits++] = new Produit(2, "Pain",   30,  3.00, "05/11/2025");
+        produits[nbProduits++] = new Produit(3, "Yaourt", 20, 12.00, "15/11/2025");
+
+        int choix;
+
+        // Boucle do-while : exécute le bloc AU MOINS une fois,
+        // puis répète TANT QUE l'utilisateur ne choisit pas 0.
+        do {
+            afficherMenu();
+            System.out.print("Votre choix : ");
+            choix = sc.nextInt();
+            sc.nextLine(); // ⚠️ OBLIGATOIRE après nextInt() !
+                           // Vide le '\n' restant dans le buffer,
+                           // sinon les prochains sc.nextLine() liront vide.
+
+            switch (choix) {
+                case 1: ajouterProduit();    break;
+                case 2: afficherTous();      break;
+                case 3: afficherParId();     break;
+                case 4: modifierPrix();      break;
+                case 5: modifierQuantite();  break;
+                case 6: supprimerProduit();  break;
+                case 0: System.out.println("Au revoir !"); break;
+                default: System.out.println("Choix invalide !");
+            }
+
+        } while (choix != 0);
+    }
+
+    // Affichage du menu
+    static void afficherMenu() {
+        System.out.println("\n╔══════════════════════════════╗");
+        System.out.println("║     GESTION DES PRODUITS     ║");
+        System.out.println("╠══════════════════════════════╣");
+        System.out.println("║  1 - Ajouter un produit      ║");
+        System.out.println("║  2 - Afficher tous           ║");
+        System.out.println("║  3 - Afficher par ID         ║");
+        System.out.println("║  4 - Modifier le prix        ║");
+        System.out.println("║  5 - Modifier la quantité    ║");
+        System.out.println("║  6 - Supprimer un produit    ║");
+        System.out.println("║  0 - Quitter                 ║");
+        System.out.println("╚══════════════════════════════╝");
+    }</code></pre>
+      </div>
+
+      <!-- trouverIndex -->
+      <p style="color:var(--orange); font-family:'Space Mono',monospace; font-size:0.78rem; font-weight:700; margin:1.5rem 0 0.5rem; letter-spacing:0.05em;">▸ MÉTHODE CLÉ : trouverIndex()</p>
+      <div class="warn-box">
+        <div class="label">⭐ LA MÉTHODE LA PLUS IMPORTANTE</div>
+        <p>Toutes les opérations sur un produit précis (afficher, modifier, supprimer) utilisent cette méthode. Elle retourne la <strong style="color:white">position dans le tableau</strong>, ou <span class="inline-code">-1</span> si l'ID n'existe pas.</p>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+          <span class="code-label">GestionProduits.java — partie 2/4</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+        </div>
+        <pre><code class="language-java">    // Cherche un produit par son id dans le tableau.
+    // Retourne : l'index (position) si trouvé, ou -1 si pas trouvé.
+    // Convention Java : retourner -1 = "non trouvé"
+    static int trouverIndex(int id) {
+        for (int i = 0; i < nbProduits; i++) {
+            if (produits[i].getId() == id) {
+                return i;   // trouvé ! on sort immédiatement
+            }
+        }
+        return -1;   // on a tout parcouru, rien trouvé
+    }</code></pre>
+      </div>
+
+      <!-- CREATE + READ -->
+      <p style="color:var(--orange); font-family:'Space Mono',monospace; font-size:0.78rem; font-weight:700; margin:1.5rem 0 0.5rem; letter-spacing:0.05em;">▸ CREATE &amp; READ</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+          <span class="code-label">GestionProduits.java — partie 3/4</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+        </div>
+        <pre><code class="language-java">    // ── 1 — AJOUTER ──────────────────────────────────────────
+    static void ajouterProduit() {
+        if (nbProduits >= produits.length) {
+            System.out.println("Tableau plein !"); return;
+        }
+
+        System.out.println("\n── Ajouter un produit ──");
+        System.out.print("ID            : "); int id = sc.nextInt(); sc.nextLine();
+
+        // Vérifier unicité de l'ID avant de continuer
+        if (trouverIndex(id) != -1) {
+            System.out.println("Cet ID existe déjà !"); return;
+        }
+
+        System.out.print("Libellé       : "); String lib  = sc.nextLine();
+        System.out.print("Quantité      : "); int    qte  = sc.nextInt(); sc.nextLine();
+        System.out.print("Prix unitaire : "); double prix = sc.nextDouble(); sc.nextLine();
+        System.out.print("Date péremp.  : "); String date = sc.nextLine();
+
+        // Créer l'objet et le mettre à la prochaine case libre
+        produits[nbProduits] = new Produit(id, lib, qte, prix, date);
+        nbProduits++;   // ← toujours incrémenter après ajout !
+        System.out.println("✓ Produit ajouté !");
+    }
+
+    // ── 2 — AFFICHER TOUS ────────────────────────────────────
+    // Important : boucler jusqu'à nbProduits, PAS produits.length
+    // (sinon on lirait 97 cases null et on aurait une erreur !)
+    static void afficherTous() {
+        if (nbProduits == 0) { System.out.println("Aucun produit."); return; }
+        System.out.println("\n── Liste (" + nbProduits + " produits) ──");
+        for (int i = 0; i < nbProduits; i++) {
+            produits[i].afficher();   // méthode de la classe Produit
+        }
+    }
+
+    // ── 3 — AFFICHER PAR ID ──────────────────────────────────
+    static void afficherParId() {
+        System.out.print("\nID recherché : "); int id = sc.nextInt(); sc.nextLine();
+        int index = trouverIndex(id);   // on cherche la position
+        if (index == -1) { System.out.println("Introuvable !"); }
+        else             { produits[index].afficher(); }
+    }</code></pre>
+      </div>
+
+      <!-- UPDATE + DELETE -->
+      <p style="color:var(--orange); font-family:'Space Mono',monospace; font-size:0.78rem; font-weight:700; margin:1.5rem 0 0.5rem; letter-spacing:0.05em;">▸ UPDATE &amp; DELETE</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+          <span class="code-label">GestionProduits.java — partie 4/4</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+        </div>
+        <pre><code class="language-java">    // ── 4 — MODIFIER LE PRIX ─────────────────────────────────
+    static void modifierPrix() {
+        System.out.print("\nID du produit : "); int id = sc.nextInt(); sc.nextLine();
+        int index = trouverIndex(id);
+        if (index == -1) { System.out.println("Introuvable !"); return; }
+
+        System.out.println("Prix actuel : " + produits[index].getPrixUnitaire());
+        System.out.print("Nouveau prix : "); double prix = sc.nextDouble(); sc.nextLine();
+        produits[index].setPrixUnitaire(prix);   // setter !
+        System.out.println("✓ Prix modifié !");
+    }
+
+    // ── 5 — MODIFIER LA QUANTITÉ ─────────────────────────────
+    static void modifierQuantite() {
+        System.out.print("\nID du produit : "); int id = sc.nextInt(); sc.nextLine();
+        int index = trouverIndex(id);
+        if (index == -1) { System.out.println("Introuvable !"); return; }
+
+        System.out.println("Quantité actuelle : " + produits[index].getQuantite());
+        System.out.print("Nouvelle quantité : "); int qte = sc.nextInt(); sc.nextLine();
+        produits[index].setQuantite(qte);   // setter !
+        System.out.println("✓ Quantité modifiée !");
+    }
+
+    // ── 6 — SUPPRIMER ────────────────────────────────────────
+    // Technique : décaler tous les éléments suivants vers la gauche
+    //
+    //  Avant : [Lait, Pain, Yaourt, Beurre]   supprimer Pain (index=1)
+    //    i=1 : produits[1] = produits[2]  →  [Lait, Yaourt, Yaourt, Beurre]
+    //    i=2 : produits[2] = produits[3]  →  [Lait, Yaourt, Beurre, Beurre]
+    //  Après nbProduits-- : on ne "voit" plus le Beurre en double
+    //  Résultat visible : [Lait, Yaourt, Beurre] ✓
+    static void supprimerProduit() {
+        System.out.print("\nID à supprimer : "); int id = sc.nextInt(); sc.nextLine();
+        int index = trouverIndex(id);
+        if (index == -1) { System.out.println("Introuvable !"); return; }
+
+        for (int i = index; i < nbProduits - 1; i++) {
+            produits[i] = produits[i + 1];   // décaler vers la gauche
+        }
+        produits[nbProduits - 1] = null;  // nettoyer la dernière case
+        nbProduits--;
+        System.out.println("✓ Produit supprimé !");
+    }
+
+}  // fin de la classe GestionProduits</code></pre>
+      </div>
+    </div>
+
+    <!-- Points clés -->
+    <div class="grid-3" style="margin-top:2.5rem">
+      <div class="card">
+        <div class="card-title"><span class="icon">⚠️</span> sc.nextLine() après nextInt()</div>
+        <p>Toujours vider le buffer après <span class="inline-code">sc.nextInt()</span> sinon le <span class="inline-code">sc.nextLine()</span> suivant lira une chaîne vide !</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🔢</span> nbProduits vs length</div>
+        <p>Boucler jusqu'à <span class="inline-code">nbProduits</span> (cases utilisées), pas <span class="inline-code">produits.length</span> (100) sinon on lit des cases <span class="inline-code">null</span>.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🗑️</span> Suppression = décalage</div>
+        <p>Dans un tableau Java, on ne peut pas vraiment supprimer. On décale les éléments vers la gauche, puis <span class="inline-code">nbProduits--</span>.</p>
+      </div>
+    </div>
+
+  </section>
+
 </main>
 
 <!-- FOOTER -->
@@ -1476,8 +1816,22 @@ public class SousClasse extends MaClasse {
 
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
+  // Tab switcher (exercice section)
+  function switchTab(n) {
+    document.getElementById('tab-1').style.display = n === 1 ? 'block' : 'none';
+    document.getElementById('tab-2').style.display = n === 2 ? 'block' : 'none';
+    document.getElementById('tab-btn-1').style.background = n === 1 ? 'rgba(255,77,0,0.1)' : 'none';
+    document.getElementById('tab-btn-1').style.color = n === 1 ? 'var(--orange)' : 'var(--muted)';
+    document.getElementById('tab-btn-1').style.borderColor = n === 1 ? 'var(--orange)' : 'var(--border)';
+    document.getElementById('tab-btn-2').style.background = n === 2 ? 'rgba(255,77,0,0.1)' : 'none';
+    document.getElementById('tab-btn-2').style.color = n === 2 ? 'var(--orange)' : 'var(--muted)';
+    document.getElementById('tab-btn-2').style.borderColor = n === 2 ? 'var(--orange)' : 'var(--border)';
+    // re-highlight new code blocks
+    document.querySelectorAll('#tab-' + n + ' code').forEach(el => { el.removeAttribute('data-highlighted'); hljs.highlightElement(el); });
+  }
+
   // Active nav on scroll
-  const sections = ['intro','classe','objet','constructeur','attributs','methodes','encapsulation','heritage','quiz'];
+  const sections = ['intro','classe','objet','constructeur','attributs','methodes','encapsulation','heritage','quiz','exercice'];
   const navItems = document.querySelectorAll('.nav-item');
 
   window.addEventListener('scroll', () => {
