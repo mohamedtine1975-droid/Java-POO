@@ -535,6 +535,7 @@
     <button class="nav-item" onclick="scrollTo('methodes')">06 — Méthodes</button>
     <button class="nav-item" onclick="scrollTo('encapsulation')">07 — Encapsulation</button>
     <button class="nav-item" onclick="scrollTo('heritage')">08 — Héritage</button>
+    <button class="nav-item" onclick="scrollTo('abstrait')">09 — Abstrait & Interface</button>
     <button class="nav-item" onclick="scrollTo('quiz')">🎯 Quiz</button>
     <button class="nav-item" onclick="scrollTo('exercice')">💻 Exercice CRUD</button>
   </div>
@@ -1165,6 +1166,276 @@ rex.aboyer();   // → "Rex aboie : Wouf Wouf !" (spécifique Chien)</code></pre
       <div class="card">
         <div class="card-title"><span class="icon">🔄</span> @Override</div>
         <p>Indique qu'on <strong>redéfinit</strong> une méthode héritée. L'annotation est optionnelle mais recommandée pour la clarté.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 09 CLASSES ABSTRAITES & INTERFACES -->
+  <section class="section fade-in" id="abstrait">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <h2 class="section-title">Classes Abstraites &amp; Interfaces</h2>
+    </div>
+
+    <!-- Intro différence -->
+    <div class="grid-2" style="margin-bottom:2rem">
+      <div class="card">
+        <div class="card-title"><span class="icon">🏗️</span> Classe abstraite</div>
+        <p>Une classe <strong style="color:white">incomplète</strong> qu'on ne peut pas instancier directement. Elle définit une base commune et force les sous-classes à compléter certaines méthodes.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">📋</span> Interface</div>
+        <p>Un <strong style="color:white">contrat</strong> pur. Elle ne contient que des signatures de méthodes (ce qu'il faut faire) sans aucune implémentation (comment le faire).</p>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <div class="label">🔑 DIFFÉRENCE CLÉS</div>
+      <p>
+        <span class="pill">abstract class</span> peut avoir des attributs, des méthodes normales ET des méthodes abstraites<br>
+        <span class="pill">interface</span> que des méthodes sans corps (par défaut) — c'est un contrat à 100%<br>
+        <span class="pill">extends</span> pour hériter d'une classe abstraite &nbsp;|&nbsp; <span class="pill">implements</span> pour implémenter une interface
+      </p>
+    </div>
+
+    <!-- CLASSE ABSTRAITE -->
+    <h3 style="font-size:1.3rem; font-weight:800; margin:2.5rem 0 1rem; color:white;">Partie 1 — La Classe Abstraite</h3>
+
+    <p style="color:#aaa; line-height:1.8; margin-bottom:1.5rem">
+      Mot-clé : <span class="inline-code">abstract</span>. Une méthode abstraite n'a <strong style="color:white">pas de corps</strong> — juste sa signature. Les sous-classes sont <strong style="color:white">obligées</strong> de l'implémenter, sinon Java refuse de compiler.
+    </p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-label">Forme.java + Rectangle.java + Cercle.java</span>
+        <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+      </div>
+      <pre><code class="language-java">// ── CLASSE ABSTRAITE ─────────────────────────────────────────
+// "abstract" devant class = on NE PEUT PAS faire : new Forme()
+// Elle sert uniquement de base pour les sous-classes.
+public abstract class Forme {
+
+    // Attribut normal (hérité par toutes les sous-classes)
+    protected String couleur;
+
+    // Constructeur normal
+    public Forme(String couleur) {
+        this.couleur = couleur;
+    }
+
+    // Méthode ABSTRAITE : pas de corps { }, juste la signature.
+    // Chaque sous-classe DOIT obligatoirement la redéfinir.
+    public abstract double calculerSurface();   // ← pas de { }
+    public abstract double calculerPerimetre(); // ← pas de { }
+
+    // Méthode NORMALE (héritée telle quelle, pas besoin de redéfinir)
+    public void afficherCouleur() {
+        System.out.println("Couleur : " + couleur);
+    }
+}
+
+// ── SOUS-CLASSE 1 : Rectangle ────────────────────────────────
+public class Rectangle extends Forme {
+
+    private double largeur, hauteur;
+
+    public Rectangle(String couleur, double largeur, double hauteur) {
+        super(couleur);  // appel du constructeur de Forme
+        this.largeur = largeur;
+        this.hauteur = hauteur;
+    }
+
+    // Obligation de définir les méthodes abstraites de Forme
+    @Override
+    public double calculerSurface() {
+        return largeur * hauteur;
+    }
+
+    @Override
+    public double calculerPerimetre() {
+        return 2 * (largeur + hauteur);
+    }
+}
+
+// ── SOUS-CLASSE 2 : Cercle ───────────────────────────────────
+public class Cercle extends Forme {
+
+    private double rayon;
+
+    public Cercle(String couleur, double rayon) {
+        super(couleur);
+        this.rayon = rayon;
+    }
+
+    @Override
+    public double calculerSurface() {
+        return Math.PI * rayon * rayon;  // Math.PI = 3.14159...
+    }
+
+    @Override
+    public double calculerPerimetre() {
+        return 2 * Math.PI * rayon;
+    }
+}
+
+// ── UTILISATION dans Main.java ───────────────────────────────
+// Forme f = new Forme("rouge");  ❌ ERREUR ! Forme est abstraite
+
+Rectangle r = new Rectangle("bleu", 5.0, 3.0);
+Cercle    c = new Cercle("rouge", 4.0);
+
+System.out.println(r.calculerSurface());    // → 15.0
+System.out.println(c.calculerSurface());    // → 50.26...
+r.afficherCouleur();                        // → "Couleur : bleu" (hérité)</code></pre>
+    </div>
+
+    <div class="warn-box">
+      <div class="label">⚠️ RÈGLE IMPORTANTE</div>
+      <p>Si une sous-classe n'implémente pas <strong style="color:white">toutes</strong> les méthodes abstraites, Java refusera de compiler — sauf si elle est elle-même déclarée <span class="inline-code">abstract</span>.</p>
+    </div>
+
+    <!-- INTERFACE -->
+    <h3 style="font-size:1.3rem; font-weight:800; margin:2.5rem 0 1rem; color:white;">Partie 2 — L'Interface</h3>
+
+    <p style="color:#aaa; line-height:1.8; margin-bottom:1.5rem">
+      Une interface est un <strong style="color:white">contrat pur</strong>. Toutes ses méthodes sont implicitement <span class="inline-code">public abstract</span>. Une classe peut implémenter <strong style="color:white">plusieurs interfaces</strong> (contrairement à l'héritage limité à une seule classe).
+    </p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-label">Payable.java (interface) + Commande.java</span>
+        <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+      </div>
+      <pre><code class="language-java">// ── INTERFACE ────────────────────────────────────────────────
+// Mot-clé "interface" (pas "class")
+// Toutes les méthodes sont publiques et abstraites par défaut.
+// Pas d'attributs d'instance, pas de constructeur.
+public interface Payable {
+    double calculerMontant();  // implicitement : public abstract
+    void afficherFacture();    // implicitement : public abstract
+}
+
+// ── DEUXIÈME INTERFACE ───────────────────────────────────────
+public interface Livrable {
+    void livrer(String adresse);
+}
+
+// ── CLASSE QUI IMPLÉMENTE LES DEUX INTERFACES ────────────────
+// "implements" + on peut mettre plusieurs interfaces séparées par ","
+// La classe DOIT implémenter TOUTES les méthodes des deux interfaces.
+public class Commande implements Payable, Livrable {
+
+    private String produit;
+    private int    quantite;
+    private double prixUnitaire;
+
+    public Commande(String produit, int quantite, double prixUnitaire) {
+        this.produit      = produit;
+        this.quantite     = quantite;
+        this.prixUnitaire = prixUnitaire;
+    }
+
+    // ← Implémentation de Payable
+    @Override
+    public double calculerMontant() {
+        return quantite * prixUnitaire;
+    }
+
+    @Override
+    public void afficherFacture() {
+        System.out.println("=== FACTURE ===");
+        System.out.println("Produit  : " + produit);
+        System.out.println("Quantité : " + quantite);
+        System.out.printf ("Total    : %.2f DH%n", calculerMontant());
+    }
+
+    // ← Implémentation de Livrable
+    @Override
+    public void livrer(String adresse) {
+        System.out.println("Livraison de " + produit + " → " + adresse);
+    }
+}
+
+// ── UTILISATION ──────────────────────────────────────────────
+Commande cmd = new Commande("Ordinateur", 2, 5500.0);
+cmd.afficherFacture();       // → FACTURE avec total 11000 DH
+cmd.livrer("Dakar, Sénégal"); // → Livraison de Ordinateur → Dakar
+
+// Polymorphisme via interface : on peut stocker dans une variable de type interface
+Payable p = new Commande("Clavier", 3, 150.0);
+System.out.println(p.calculerMontant()); // → 450.0</code></pre>
+    </div>
+
+    <!-- Tableau comparatif -->
+    <h3 style="font-size:1.3rem; font-weight:800; margin:2.5rem 0 1rem; color:white;">Comparatif : Abstract vs Interface</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>CRITÈRE</th>
+          <th>CLASSE ABSTRAITE</th>
+          <th>INTERFACE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Mot-clé</td>
+          <td><span class="inline-code">abstract class</span></td>
+          <td><span class="inline-code">interface</span></td>
+        </tr>
+        <tr>
+          <td>Instanciable ?</td>
+          <td>❌ Non (<span class="inline-code">new</span> interdit)</td>
+          <td>❌ Non</td>
+        </tr>
+        <tr>
+          <td>Méthodes normales ?</td>
+          <td>✅ Oui</td>
+          <td>❌ Non (par défaut)</td>
+        </tr>
+        <tr>
+          <td>Attributs ?</td>
+          <td>✅ Oui</td>
+          <td>❌ Non (que des constantes)</td>
+        </tr>
+        <tr>
+          <td>Constructeur ?</td>
+          <td>✅ Oui</td>
+          <td>❌ Non</td>
+        </tr>
+        <tr>
+          <td>Héritage multiple ?</td>
+          <td>❌ Une seule (<span class="inline-code">extends</span>)</td>
+          <td>✅ Plusieurs (<span class="inline-code">implements A, B</span>)</td>
+        </tr>
+        <tr>
+          <td>Utilisé quand ?</td>
+          <td>Relation "EST UN" avec code commun</td>
+          <td>Relation "PEUT FAIRE" (contrat)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="highlight-box" style="margin-top:1.5rem">
+      <div class="label">💡 ASTUCE POUR CHOISIR</div>
+      <p>
+        → Utilise une <strong style="color:white">classe abstraite</strong> quand les sous-classes partagent du code commun (ex: toutes les Formes ont une couleur).<br>
+        → Utilise une <strong style="color:white">interface</strong> quand tu veux juste garantir qu'une classe sait faire quelque chose, peu importe ce qu'elle est (ex: tout ce qui est Payable doit avoir <span class="inline-code">calculerMontant()</span>).
+      </p>
+    </div>
+
+    <div class="grid-2" style="margin-top:1.5rem">
+      <div class="card">
+        <div class="card-title"><span class="icon">🎓</span> abstract class</div>
+        <p>Pense à un <strong style="color:white">modèle incomplet</strong>. Animal est abstrait : on sait que tout animal fait un son, mais on ne peut pas définir lequel sans savoir l'espèce.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">📝</span> interface</div>
+        <p>Pense à un <strong style="color:white">CV de compétences</strong>. Si tu implémentes <span class="inline-code">Nageur</span>, tu t'engages à savoir nager — peu importe si tu es un dauphin ou un humain.</p>
       </div>
     </div>
   </section>
@@ -1831,7 +2102,7 @@ public class GestionProduits {
   }
 
   // Active nav on scroll
-  const sections = ['intro','classe','objet','constructeur','attributs','methodes','encapsulation','heritage','quiz','exercice'];
+  const sections = ['intro','classe','objet','constructeur','attributs','methodes','encapsulation','heritage','abstrait','quiz','exercice'];
   const navItems = document.querySelectorAll('.nav-item');
 
   window.addEventListener('scroll', () => {
