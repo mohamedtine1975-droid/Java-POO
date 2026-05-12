@@ -536,6 +536,8 @@
     <button class="nav-item" onclick="scrollTo('encapsulation')">07 — Encapsulation</button>
     <button class="nav-item" onclick="scrollTo('heritage')">08 — Héritage</button>
     <button class="nav-item" onclick="scrollTo('abstrait')">09 — Abstrait & Interface</button>
+    <button class="nav-item" onclick="scrollTo('exceptions')">10 — Exceptions</button>
+    <button class="nav-item" onclick="scrollTo('listes')">11 — Listes</button>
     <button class="nav-item" onclick="scrollTo('quiz')">🎯 Quiz</button>
     <button class="nav-item" onclick="scrollTo('exercice')">💻 Exercice CRUD</button>
   </div>
@@ -1442,6 +1444,384 @@ System.out.println(p.calculerMontant()); // → 450.0</code></pre>
 
   <hr class="divider">
 
+  <!-- 10 EXCEPTIONS -->
+  <section class="section fade-in" id="exceptions">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <h2 class="section-title">Les Exceptions</h2>
+    </div>
+
+    <p style="color:#aaa; line-height:1.8; margin-bottom:2rem">Une <strong style="color:white">exception</strong> est une erreur qui survient pendant l'exécution du programme. Java permet de les <strong style="color:white">attraper et gérer</strong> proprement sans que le programme plante brutalement.</p>
+
+    <div class="grid-3" style="margin-bottom:2rem">
+      <div class="card">
+        <div class="card-title"><span class="icon">💥</span> Sans gestion</div>
+        <p>Le programme <strong style="color:white">plante</strong> et affiche une <em>stack trace</em> illisible dans la console.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🛡️</span> Avec try-catch</div>
+        <p>On <strong style="color:white">intercepte</strong> l'erreur et on affiche un message clair. Le programme continue.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🎯</span> finally</div>
+        <p>Bloc qui s'exécute <strong style="color:white">toujours</strong>, qu'il y ait eu une erreur ou non (ex: fermer une connexion).</p>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <div class="label">🔑 SYNTAXE TRY-CATCH-FINALLY</div>
+      <p>
+        <span class="inline-code">try { }</span> → le code risqué à surveiller<br>
+        <span class="inline-code">catch (TypeException e) { }</span> → que faire si ça plante<br>
+        <span class="inline-code">finally { }</span> → toujours exécuté (optionnel)
+      </p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-label">Exemple — Division par zéro</span>
+        <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+      </div>
+      <pre><code class="language-java">public class Main {
+    public static void main(String[] args) {
+
+        // ── SANS TRY-CATCH ───────────────────────────────────
+        // int result = 10 / 0;  // ❌ ArithmeticException : programme plante !
+
+        // ── AVEC TRY-CATCH ───────────────────────────────────
+        try {
+            int result = 10 / 0;          // code risqué
+            System.out.println(result);   // cette ligne ne s'exécute pas
+
+        } catch (ArithmeticException e) {
+            // "e" contient les infos sur l'erreur
+            System.out.println("Erreur : " + e.getMessage()); // → "/ by zero"
+
+        } finally {
+            System.out.println("Bloc finally : toujours exécuté !");
+        }
+
+        System.out.println("Le programme continue normalement.");
+    }
+}</code></pre>
+    </div>
+
+    <h3 style="font-size:1.2rem;font-weight:800;margin:2.5rem 0 1rem;color:white">Les exceptions les plus courantes</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>EXCEPTION</th>
+          <th>CAUSE</th>
+          <th>EXEMPLE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="inline-code">ArithmeticException</span></td>
+          <td>Division par zéro</td>
+          <td><span class="inline-code">10 / 0</span></td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">NullPointerException</span></td>
+          <td>Utiliser un objet null</td>
+          <td><span class="inline-code">String s = null; s.length()</span></td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">ArrayIndexOutOfBoundsException</span></td>
+          <td>Index hors tableau</td>
+          <td><span class="inline-code">int[] t = new int[3]; t[5]</span></td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">NumberFormatException</span></td>
+          <td>Conversion de texte impossible</td>
+          <td><span class="inline-code">Integer.parseInt("abc")</span></td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">ClassCastException</span></td>
+          <td>Cast de type incompatible</td>
+          <td><span class="inline-code">(String) new Integer(5)</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-label">Multi-catch + throws + exception personnalisée</span>
+        <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+      </div>
+      <pre><code class="language-java">// ── 1. MULTI-CATCH : attraper plusieurs types d'erreurs ─────
+try {
+    String s = null;
+    int n = Integer.parseInt(s);  // NullPointerException ici
+    int[] tab = new int[3];
+    tab[10] = 5;                  // ArrayIndexOutOfBoundsException ici
+
+} catch (NullPointerException e) {
+    System.out.println("Objet null détecté : " + e.getMessage());
+} catch (ArrayIndexOutOfBoundsException e) {
+    System.out.println("Index invalide : " + e.getMessage());
+} catch (Exception e) {
+    // Attrape TOUTES les autres exceptions (filet de sécurité)
+    System.out.println("Erreur inattendue : " + e.getMessage());
+}
+
+// ── 2. THROWS : signaler qu'une méthode PEUT lancer une exception
+// La méthode ne gère pas elle-même — elle délègue à l'appelant.
+public static int diviser(int a, int b) throws ArithmeticException {
+    if (b == 0) throw new ArithmeticException("Division par zéro interdite !");
+    return a / b;
+}
+
+// Utilisation (l'appelant gère l'exception) :
+try {
+    System.out.println(diviser(10, 2));  // → 5
+    System.out.println(diviser(10, 0));  // → exception lancée
+} catch (ArithmeticException e) {
+    System.out.println("Capturé : " + e.getMessage());
+}
+
+// ── 3. EXCEPTION PERSONNALISÉE ───────────────────────────────
+// On peut créer ses propres exceptions en héritant de Exception.
+class SoldeInsuffisantException extends Exception {
+    public SoldeInsuffisantException(String message) {
+        super(message);  // passe le message à la classe Exception
+    }
+}
+
+// Utilisation :
+public void retirer(double montant) throws SoldeInsuffisantException {
+    if (montant > solde) {
+        throw new SoldeInsuffisantException("Solde insuffisant ! Disponible : " + solde);
+    }
+    solde -= montant;
+}</code></pre>
+    </div>
+
+    <div class="grid-2">
+      <div class="highlight-box">
+        <div class="label">📌 throw vs throws</div>
+        <p>
+          <span class="inline-code">throw</span> → <strong style="color:white">lancer</strong> une exception (action)<br><br>
+          <span class="inline-code">throws</span> → <strong style="color:white">déclarer</strong> qu'une méthode peut lancer une exception (dans la signature)
+        </p>
+      </div>
+      <div class="warn-box">
+        <div class="label">⚠️ ORDRE DES CATCH</div>
+        <p>Toujours mettre les exceptions <strong style="color:white">spécifiques avant</strong> les générales. Si tu mets <span class="inline-code">Exception</span> en premier, les blocs suivants ne seront jamais atteints !</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 11 LISTES -->
+  <section class="section fade-in" id="listes">
+    <div class="section-header">
+      <span class="section-num">11</span>
+      <h2 class="section-title">Les Listes — ArrayList</h2>
+    </div>
+
+    <p style="color:#aaa; line-height:1.8; margin-bottom:2rem">Un <strong style="color:white">tableau classique</strong> <span class="inline-code">int[]</span> a une taille <strong style="color:white">fixe</strong>. L'<strong style="color:white">ArrayList</strong> est une liste <strong style="color:white">dynamique</strong> : elle grandit et rétrécit automatiquement. C'est la structure la plus utilisée en Java.</p>
+
+    <div class="grid-2" style="margin-bottom:2rem">
+      <div class="card">
+        <div class="card-title"><span class="icon">📦</span> Tableau classique</div>
+        <p>Taille <strong style="color:white">fixe</strong> à la déclaration. Rapide mais inflexible. Idéal quand le nombre d'éléments est connu à l'avance.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🔄</span> ArrayList</div>
+        <p>Taille <strong style="color:white">dynamique</strong>. On peut ajouter/supprimer à volonté. Nécessite d'importer <span class="inline-code">java.util.ArrayList</span>.</p>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <div class="label">🔑 DÉCLARATION D'UNE ARRAYLIST</div>
+      <p>
+        <span class="inline-code">ArrayList&lt;Type&gt; nomListe = new ArrayList&lt;&gt;();</span><br><br>
+        Le <strong style="color:white">&lt;Type&gt;</strong> = type des éléments (toujours une classe, jamais un type primitif)<br>
+        → <span class="inline-code">ArrayList&lt;String&gt;</span>, <span class="inline-code">ArrayList&lt;Integer&gt;</span>, <span class="inline-code">ArrayList&lt;Etudiant&gt;</span>
+      </p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-label">ArrayList — Méthodes essentielles</span>
+        <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+      </div>
+      <pre><code class="language-java">import java.util.ArrayList;   // ← OBLIGATOIRE
+
+public class Main {
+    public static void main(String[] args) {
+
+        // ── CRÉATION ─────────────────────────────────────────
+        ArrayList&lt;String&gt; prenoms = new ArrayList&lt;&gt;();
+
+        // ── AJOUTER ──────────────────────────────────────────
+        prenoms.add("Yasmine");          // ajoute à la fin
+        prenoms.add("Karim");
+        prenoms.add("Sara");
+        prenoms.add(1, "Mehdi");         // ajoute à l'index 1
+        // Liste : [Yasmine, Mehdi, Karim, Sara]
+
+        // ── LIRE ─────────────────────────────────────────────
+        System.out.println(prenoms.get(0));    // → "Yasmine"
+        System.out.println(prenoms.size());    // → 4 (nombre d'éléments)
+
+        // ── MODIFIER ─────────────────────────────────────────
+        prenoms.set(2, "Adam");          // remplace l'élément à l'index 2
+        // Liste : [Yasmine, Mehdi, Adam, Sara]
+
+        // ── SUPPRIMER ────────────────────────────────────────
+        prenoms.remove("Sara");          // par valeur
+        prenoms.remove(0);              // par index → supprime "Yasmine"
+        // Liste : [Mehdi, Adam]
+
+        // ── VÉRIFIER ─────────────────────────────────────────
+        System.out.println(prenoms.contains("Mehdi"));  // → true
+        System.out.println(prenoms.isEmpty());          // → false
+        prenoms.clear();                                // vide toute la liste
+        System.out.println(prenoms.isEmpty());          // → true
+    }
+}</code></pre>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>MÉTHODE</th>
+          <th>DESCRIPTION</th>
+          <th>EXEMPLE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="inline-code">add(e)</span></td>
+          <td>Ajoute à la fin</td>
+          <td><span class="inline-code">liste.add("Ali")</span></td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">add(i, e)</span></td>
+          <td>Ajoute à l'index i</td>
+          <td><span class="inline-code">liste.add(0, "Ali")</span></td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">get(i)</span></td>
+          <td>Récupère l'élément à l'index i</td>
+          <td><span class="inline-code">liste.get(2)</span></td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">set(i, e)</span></td>
+          <td>Remplace l'élément à l'index i</td>
+          <td><span class="inline-code">liste.set(1, "Sara")</span></td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">remove(i)</span></td>
+          <td>Supprime par index</td>
+          <td><span class="inline-code">liste.remove(0)</span></td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">remove(o)</span></td>
+          <td>Supprime par valeur</td>
+          <td><span class="inline-code">liste.remove("Ali")</span></td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">size()</span></td>
+          <td>Nombre d'éléments</td>
+          <td><span class="inline-code">liste.size()</span></td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">contains(e)</span></td>
+          <td>Vérifie si l'élément existe</td>
+          <td><span class="inline-code">liste.contains("Ali")</span></td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">clear()</span></td>
+          <td>Vide toute la liste</td>
+          <td><span class="inline-code">liste.clear()</span></td>
+        </tr>
+        <tr>
+          <td><span class="inline-code">isEmpty()</span></td>
+          <td>Vérifie si la liste est vide</td>
+          <td><span class="inline-code">liste.isEmpty()</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:1.2rem;font-weight:800;margin:2.5rem 0 1rem;color:white">ArrayList d'objets + boucles</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-label">ArrayList&lt;Etudiant&gt; — exemple complet</span>
+        <button class="copy-btn" onclick="copyCode(this)">COPIER</button>
+      </div>
+      <pre><code class="language-java">import java.util.ArrayList;
+
+public class Main {
+    public static void main(String[] args) {
+
+        // Liste d'OBJETS Etudiant (pas seulement des String)
+        ArrayList&lt;Etudiant&gt; classe = new ArrayList&lt;&gt;();
+
+        // Ajouter des objets
+        classe.add(new Etudiant("Yasmine", 20, 15.5));
+        classe.add(new Etudiant("Karim",   22, 11.0));
+        classe.add(new Etudiant("Sara",    21, 17.0));
+        classe.add(new Etudiant("Mehdi",   19,  9.5));
+
+        // ── BOUCLE FOR CLASSIQUE ──────────────────────────────
+        System.out.println("── Boucle for classique ──");
+        for (int i = 0; i &lt; classe.size(); i++) {
+            Etudiant e = classe.get(i);    // récupérer l'objet
+            e.sePresenter();
+        }
+
+        // ── BOUCLE FOR-EACH (plus lisible) ───────────────────
+        System.out.println("\n── Boucle for-each ──");
+        for (Etudiant e : classe) {        // "pour chaque Etudiant e dans classe"
+            e.sePresenter();
+        }
+
+        // ── RECHERCHER dans la liste ──────────────────────────
+        System.out.println("\n── Etudiants avec moyenne &gt;= 15 ──");
+        for (Etudiant e : classe) {
+            if (e.getMoyenne() &gt;= 15) {
+                System.out.println(e.getNom() + " → " + e.getMoyenne());
+            }
+        }
+        // → Yasmine → 15.5
+        // → Sara    → 17.0
+
+        // ── SUPPRIMER pendant une boucle ──────────────────────
+        // ⚠️ NE PAS modifier la liste pendant un for-each !
+        // Utiliser removeIf() à la place :
+        classe.removeIf(e -&gt; e.getMoyenne() &lt; 10);  // supprime Mehdi
+        System.out.println("\nAprès suppression : " + classe.size() + " étudiants");
+    }
+}</code></pre>
+    </div>
+
+    <div class="grid-2">
+      <div class="highlight-box">
+        <div class="label">💡 FOR-EACH = LE MEILLEUR AMI</div>
+        <p>
+          <span class="inline-code">for (Type var : liste) { }</span><br><br>
+          Plus lisible que le for classique. À utiliser dès qu'on veut juste <strong style="color:white">parcourir</strong> sans modifier les index.
+        </p>
+      </div>
+      <div class="warn-box">
+        <div class="label">⚠️ Integer, Double, pas int, double</div>
+        <p>ArrayList ne peut pas stocker de types primitifs. Utilise les classes <strong style="color:white">enveloppantes</strong> :<br><span class="inline-code">Integer</span> pour int, <span class="inline-code">Double</span> pour double, <span class="inline-code">Boolean</span> pour boolean.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
   <!-- QUIZ -->
   <section class="section fade-in" id="quiz">
     <div class="section-header">
@@ -2102,7 +2482,7 @@ public class GestionProduits {
   }
 
   // Active nav on scroll
-  const sections = ['intro','classe','objet','constructeur','attributs','methodes','encapsulation','heritage','abstrait','quiz','exercice'];
+  const sections = ['intro','classe','objet','constructeur','attributs','methodes','encapsulation','heritage','abstrait','exceptions','listes','quiz','exercice'];
   const navItems = document.querySelectorAll('.nav-item');
 
   window.addEventListener('scroll', () => {
